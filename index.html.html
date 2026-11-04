@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پیشخوان هوشمند پی اس نت • بوئین‌زهرا</title>
+    <style>
+        :root {
+            --bg-deep: #090314;
+            --bg-card: rgba(26, 12, 48, 0.85);
+            --bg-card-border: rgba(147, 51, 234, 0.3);
+            --primary: #9333ea;
+            --primary-hover: #a855f7;
+            --gold: #f59e0b;
+            --gold-light: #fde68a;
+            --emerald: #10b981;
+            --rose: #f43f5e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Vazirmatn', Tahoma, sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            direction: rtl;
+            min-height: 100vh;
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(147, 51, 234, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(245, 158, 11, 0.1) 0%, transparent 45%);
+            background-attachment: fixed;
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--bg-card-border);
+            border-radius: 20px;
+            box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.7);
+        }
+
+        .glass-card-sm {
+            background: rgba(36, 16, 66, 0.65);
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            border-radius: 14px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            text-decoration: none;
+        }
+
+        .btn:active { transform: scale(0.97); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7e22ce, #9333ea);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(147, 51, 234, 0.35);
+        }
+        .btn-primary:hover { background: linear-gradient(135deg, #9333ea, #a855f7); }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+            color: #090314;
+            font-weight: 900;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+        .btn-gold:hover { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.07);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .btn-ghost:hover { background: rgba(255, 255, 255, 0.14); }
+
+        .btn-danger {
+            background: rgba(244, 63, 94, 0.15);
+            color: #fda4af;
+            border: 1px solid rgba(244, 63, 94, 0.35);
+        }
+
+        .input-box {
+            width: 100%;
+            background: rgba(15, 7, 28, 0.75);
+            border: 1px solid rgba(147, 51, 234, 0.35);
+            padding: 12px 14px;
+            border-radius: 12px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-box:focus {
+            border-color: var(--primary-hover);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.25);
+        }
+
+        .tab-btn {
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background: rgba(147, 51, 234, 0.3);
+            color: var(--gold-light);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+
+        .table-responsive { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: right; }
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--gold-light);
+            padding: 12px 14px;
+            font-weight: 800;
+            border-bottom: 1px solid var(--bg-card-border);
+        }
+        td { padding: 12px 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(4, 1, 10, 0.88);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 1000;
+        }
+        .modal-content { width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+
+        #toastContainer {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            background: #1e1136;
+            color: #fff;
+            border: 1px solid var(--primary);
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media print {
+            body { background: #fff !important; color: #000 !important; }
+            .no-print { display: none !important; }
+            #standModal { position: static !important; background: none !important; padding: 0 !important; }
+            #standCardPreview { box-shadow: none !important; border: 2px solid #581c87 !important; page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- هدر سایت -->
+    <header class="no-print" style="border-bottom: 1px solid var(--bg-card-border); background: rgba(15, 7, 28, 0.95); position: sticky; top: 0; z-index: 100;">
+        <div style="max-width: 1100px; margin: 0 auto; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #7e22ce, #f59e0b); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; color: #fff;">PS</div>
+                <div>
+                    <h1 style="font-size: 16px; font-weight: 900; color: #fff;">پیشخوان آنلاین پی اس نت</h1>
+                    <p style="font-size: 11px; color: var(--gold-light);">خدمات رایانه‌ای، دولتی و بیمه • بوئین‌زهرا</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button id="btnOpenStand" class="btn btn-ghost" style="font-size: 12px;">
+                    🖨️ <span>استند بارکد</span>
+                </button>
+                <button id="btnToggleAdmin" class="btn btn-primary" style="font-size: 12px;">
+                    🔒 <span id="adminBtnText">میز کار مدیر</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main style="max-width: 1100px; margin: 28px auto; padding: 0 16px;">
+
+        <!-- بخش مشتری: ثبت سفارش -->
+        <section id="customerSection" style="max-width: 680px; margin: 0 auto;">
+            <div class="glass-card" style="padding: 24px;">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <span style="font-size: 12px; padding: 6px 14px; margin-bottom: 8px; display: inline-block; background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); border-radius: 999px; color: var(--gold-light); font-weight: 800;">
+                        ⚖️ نرخنامه مصوب اتحادیه رایانه بوئین‌زهرا (۱۴۰۵)
+                    </span>
+                    <h2 style="font-size: 20px; font-weight: 900; margin-top: 6px;">ثبت سفارش غیرحضوری و انجام آنی</h2>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+                        مشخصات و مدارک را وارد فرمایید تا بلافاصله روی کامپیوتر مغازه به نوبت اقدام برود.
+                    </p>
+                </div>
+
+                <form id="orderForm">
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px;">
+                            انتخاب خدمت درخواستی:
+                        </label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px;" id="categoryTabs">
+                            <button type="button" class="tab-btn active" data-cat="all">همه خدمات</button>
+                            <button type="button" class="tab-btn" data-cat="vehicle">خودرو و سخا</button>
+                            <button type="button" class="tab-btn" data-cat="loan">وام و بانکی</button>
+                            <button type="button" class="tab-btn" data-cat="judicial">قضایی و دولتی</button>
+                            <button type="button" class="tab-btn" data-cat="property">املاک و اسکان</button>
+                            <button type="button" class="tab-btn" data-cat="print">پرینت و تایپ</button>
+                        </div>
+
+                        <div style="display: flex; gap: 8px;">
+                            <select id="serviceSelect" class="input-box" style="font-weight: 700;"></select>
+                            <button type="button" id="btnOpenTariffModal" class="btn btn-ghost" title="جستجو در ۱۳۴ ردیف اتحادیه">
+                                🔍
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="glass-card-sm" style="padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <span style="font-size: 11px; color: var(--text-muted);">کارمزد قانونی مصوب اتحادیه:</span>
+                            <div id="serviceDescText" style="font-size: 11px; color: var(--gold-light);">خدمت رسمی صنف رایانه</div>
+                        </div>
+                        <div style="text-align: left;">
+                            <span id="priceDisplay" style="font-size: 20px; font-weight: 900; color: var(--gold);">۰</span>
+                            <span style="font-size: 11px; color: var(--gold-light); margin-right: 4px;">تومان</span>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px;">نام و نام خانوادگی *</label>
+                            <input type="text" id="custName" class="input-box" placeholder="مثال: رضا محمدی" required>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px;">شماره همراه (جهت تماس) *</label>
+                            <input type="tel" id="custMobile" class="input-box" placeholder="۰۹۱۲۳۴۵۶۷۸۹" maxlength="11" required dir="ltr">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 14px;">
+                        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px;">کد ملی (اختیاری جهت استعلام‌های اداری)</label>
+                        <input type="text" id="custNationalId" class="input-box" placeholder="۱۰ رقم بدون خط تیره" maxlength="10" dir="ltr">
+                    </div>
+
+                    <div style="margin-bottom: 18px;">
+                        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px;">توضیحات تکمیلی یا نام کاربری سامانه</label>
+                        <textarea id="custNotes" class="input-box" rows="2" placeholder="اگر رمز عبور یا نکته خاصی هست یادداشت فرمایید..."></textarea>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px;">
+                            عکس مدارک یا فایل‌های مربوطه (اختیاری):
+                        </label>
+                        <div id="dropZone" style="border: 2px dashed rgba(147, 51, 234, 0.4); border-radius: 14px; padding: 20px; text-align: center; cursor: pointer; background: rgba(255,255,255,0.02);">
+                            <div style="font-size: 24px; margin-bottom: 6px;">📤</div>
+                            <p style="font-size: 12px; font-weight: 700;">لمس یا کلیک جهت انتخاب تصاویر یا فایل‌ها</p>
+                            <p style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">عکس‌ها به‌صورت خودکار در مرورگر فشرده می‌شوند تا سریع ارسال شوند</p>
+                            <input type="file" id="fileInput" multiple accept="image/*,.pdf,.docx,.doc" style="display: none;">
+                        </div>
+                        <div id="filePreviewList" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;"></div>
+                    </div>
+
+                    <div class="glass-card-sm" style="padding: 16px; margin-bottom: 20px; border-color: rgba(245, 158, 11, 0.35);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                            <span style="font-size: 12px; font-weight: 700; color: var(--gold-light);">شماره کارت جهت واریز کارمزد:</span>
+                            <span style="font-size: 11px; color: var(--text-muted);">بانک قرض‌الحسنه مهر ایران - پی اس نت</span>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.5); padding: 10px 14px; border-radius: 10px;">
+                            <span id="cardNumberDisplay" style="font-family: monospace; font-size: 16px; font-weight: 900; letter-spacing: 2px; color: #fff;">
+                                ۶۰۶۳ - ۷۳۱۱ - ۰۴۰۷ - ۸۲۷۵
+                            </span>
+                            <button type="button" id="btnCopyCard" class="btn btn-ghost" style="padding: 6px 12px; font-size: 11px;">
+                                📋 <span>کپی</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btnSubmitOrder" class="btn btn-gold" style="width: 100%; padding: 14px; font-size: 15px;">
+                        ثبت سفارش و ارسال به کامپیوتر مغازه
+                    </button>
+                </form>
+
+                <div id="successBox" style="display: none; text-align: center; padding: 24px 10px;">
+                    <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(16, 185, 129, 0.2); border: 2px solid var(--emerald); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; color: var(--emerald); font-size: 24px; font-weight: 900;">
+                        ✓
+                    </div>
+                    <h3 style="font-size: 18px; font-weight: 900;">سفارش شما با موفقیت ثبت شد</h3>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">کد رهگیری اختصاصی شما:</p>
+                    <div id="resTrackingCode" style="font-family: monospace; font-size: 24px; font-weight: 900; color: var(--gold); margin: 10px 0; letter-spacing: 2px;"></div>
+
+                    <div class="glass-card-sm" style="padding: 14px; margin: 20px 0; text-align: right;">
+                        <p style="font-size: 12px; font-weight: 700; color: var(--gold-light);">📱 ارسال مدارک یا پیام در ایتا:</p>
+                        <p style="font-size: 11px; color: var(--text-muted); margin: 4px 0 10px;">جهت تسریع کار می‌توانید کد رهگیری یا مدارک را به آیدی ایتای مغازه بفرستید:</p>
+                        <a href="https://eitaa.com/PSNETSENTER" target="_blank" class="btn btn-primary" style="width: 100%; text-decoration: none;">
+                            💬 ارسال مدارک در چت ایتا (@PSNETSENTER)
+                        </a>
+                    </div>
+
+                    <button type="button" id="btnResetForm" class="btn btn-ghost" style="font-size: 12px;">
+                        ثبت سفارش جدید دیگر
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- بخش ادمین: امنیت مبتنی بر هش رمزنگاری -->
+        <section id="adminSection" style="display: none;">
+            
+            <!-- مرحله ۱: تعیین رمز عبور برای نخستین بار (اگر هنوز رمزی ست نشده باشد) -->
+            <div id="adminFirstSetupCard" class="glass-card" style="display: none; max-width: 400px; margin: 40px auto; padding: 28px; text-align: center;">
+                <div style="font-size: 32px; margin-bottom: 8px;">🛡️</div>
+                <h3 style="font-size: 17px; font-weight: 900;">تعیین رمز عبور اولیه مدیریت</h3>
+                <p style="font-size: 11px; color: var(--gold-light); margin: 6px 0 18px; line-height: 1.6;">
+                    برای امنیت اطلاعات مراجعین، یک رمز عبور اختصاصی برای پیشخوان تعریف کنید. این رمز فقط در مرورگر شما هش و نگهداری می‌شود.
+                </p>
+                <form id="adminFirstSetupForm">
+                    <input type="password" id="newAdminPassInput" class="input-box" placeholder="رمز عبور دلخواه (حداقل ۴ کاراکتر)" required style="margin-bottom: 10px; text-align: center;">
+                    <input type="password" id="confirmAdminPassInput" class="input-box" placeholder="تکرار رمز عبور" required style="margin-bottom: 14px; text-align: center;">
+                    <button type="submit" class="btn btn-gold" style="width: 100%; padding: 11px;">ذخیره امن رمز عبور و ورود</button>
+                </form>
+            </div>
+
+            <!-- مرحله ۲: فرم ورود روزمره با رمز امن هش‌شده -->
+            <div id="adminLoginCard" class="glass-card" style="display: none; max-width: 360px; margin: 40px auto; padding: 28px; text-align: center;">
+                <div style="font-size: 32px; margin-bottom: 8px;">🔒</div>
+                <h3 style="font-size: 18px; font-weight: 900;">ورود مدیر مغازه پی اس نت</h3>
+                <p style="font-size: 11px; color: var(--text-muted); margin: 4px 0 18px;">رمز عبور اختصاصی خود را وارد فرمایید:</p>
+                <form id="adminLoginForm">
+                    <input type="password" id="adminPassInput" class="input-box" placeholder="رمز عبور مدیریت" required style="margin-bottom: 12px; text-align: center; font-size: 16px; letter-spacing: 2px;">
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 11px;">ورود به میز کار</button>
+                </form>
+            </div>
+
+            <!-- داشبورد اصلی ادمین -->
+            <div id="adminDashboard" style="display: none;">
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px;">
+                    <div class="glass-card" style="padding: 16px;">
+                        <span style="font-size: 11px; color: var(--text-muted);">کل سفارش‌ها</span>
+                        <div id="statTotal" style="font-size: 24px; font-weight: 900; color: #fff;">۰</div>
+                    </div>
+                    <div class="glass-card" style="padding: 16px; border-color: rgba(245, 158, 11, 0.4);">
+                        <span style="font-size: 11px; color: var(--gold-light);">در انتظار اقدام</span>
+                        <div id="statPending" style="font-size: 24px; font-weight: 900; color: var(--gold);">۰</div>
+                    </div>
+                    <div class="glass-card" style="padding: 16px; border-color: rgba(59, 130, 246, 0.4);">
+                        <span style="font-size: 11px; color: #93c5fd;">در حال انجام</span>
+                        <div id="statInProgress" style="font-size: 24px; font-weight: 900; color: #60a5fa;">۰</div>
+                    </div>
+                    <div class="glass-card" style="padding: 16px; border-color: rgba(16, 185, 129, 0.4);">
+                        <span style="font-size: 11px; color: #86efac;">تکمیل شده</span>
+                        <div id="statCompleted" style="font-size: 24px; font-weight: 900; color: var(--emerald);">۰</div>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="padding: 16px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; gap: 8px; flex: 1; max-width: 380px;">
+                        <input type="text" id="adminSearchInput" class="input-box" placeholder="جستجو نام، موبایل یا کد رهگیری...">
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <select id="adminStatusFilter" class="input-box" style="width: auto; padding: 8px 12px;">
+                            <option value="all">همه وضعیت‌ها</option>
+                            <option value="pending">در انتظار</option>
+                            <option value="in_progress">در حال انجام</option>
+                            <option value="completed">تکمیل شده</option>
+                        </select>
+                        <button id="btnExportCSV" class="btn btn-ghost" title="خروجی امن اکسل">
+                            📊 <span>دانلود اکسل</span>
+                        </button>
+                        <button id="btnOpenChangePassModal" class="btn btn-ghost" title="تغییر رمز عبور">
+                            🔑 <span>تغییر رمز</span>
+                        </button>
+                        <button id="btnAdminLogout" class="btn btn-danger">خروج و قفل</button>
+                    </div>
+                </div>
+
+                <div class="glass-card table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>کد پیگیری</th>
+                                <th>مشتری</th>
+                                <th>خدمت مصوب</th>
+                                <th>کارمزد</th>
+                                <th>وضعیت</th>
+                                <th>مدارک</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                                    هنوز سفارشی ثبت نشده است.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- مودال تغییر رمز عبور مدیر -->
+    <div id="changePassModal" class="modal-overlay" style="display: none;">
+        <div class="glass-card modal-content" style="max-width: 380px; padding: 22px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                <h3 style="font-size: 15px; font-weight: 900;">تغییر رمز عبور مدیریت</h3>
+                <button type="button" id="btnCloseChangePassModal" class="btn btn-ghost" style="padding: 6px;">✕</button>
+            </div>
+            <form id="changePassForm">
+                <input type="password" id="oldPassInput" class="input-box" placeholder="رمز عبور فعلی" required style="margin-bottom: 10px;">
+                <input type="password" id="newPassChangeInput" class="input-box" placeholder="رمز عبور جدید" required style="margin-bottom: 10px;">
+                <input type="password" id="confirmPassChangeInput" class="input-box" placeholder="تکرار رمز عبور جدید" required style="margin-bottom: 14px;">
+                <button type="submit" class="btn btn-gold" style="width: 100%;">بروزرسانی رمز عبور</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- مودال نرخنامه -->
+    <div id="tariffModal" class="modal-overlay" style="display: none;">
+        <div class="glass-card modal-content" style="padding: 22px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                <h3 style="font-size: 16px; font-weight: 900;">جستجو در نرخنامه رسمی اتحادیه بوئین‌زهرا (۱۳۴ قلم)</h3>
+                <button type="button" id="btnCloseTariffModal" class="btn btn-ghost" style="padding: 6px;">✕</button>
+            </div>
+            <input type="text" id="tariffSearchBox" class="input-box" placeholder="جستجوی نام خدمت (تعویض پلاک، سجام، ثنا، وام...)" style="margin-bottom: 14px;">
+            <div id="tariffListContainer" style="max-height: 50vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
+        </div>
+    </div>
+
+    <!-- مودال مدارک پیوست -->
+    <div id="filesModal" class="modal-overlay" style="display: none;">
+        <div class="glass-card modal-content" style="padding: 22px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                <h3 style="font-size: 16px; font-weight: 900;">مدارک پیوست سفارش</h3>
+                <button type="button" id="btnCloseFilesModal" class="btn btn-ghost" style="padding: 6px;">✕</button>
+            </div>
+            <div id="filesListContainer" style="display: flex; flex-direction: column; gap: 10px;"></div>
+        </div>
+    </div>
+
+    <!-- پوستر رومیزی برای پرینت -->
+    <div id="standModal" class="modal-overlay" style="display: none;">
+        <div class="glass-card modal-content" style="max-width: 440px; padding: 22px; text-align: center;">
+            <div id="standCardPreview" style="background: #fff; color: #1e1b4b; padding: 24px; border-radius: 20px; border: 3px solid #6b21a8;">
+                <h2 style="font-size: 22px; font-weight: 900; color: #581c87;">پیشخوان آنلاین پی اس نت</h2>
+                <p style="font-size: 12px; font-weight: 800; color: #d97706; margin-top: 2px;">PS NET • بوئین‌زهرا</p>
+                <div style="margin: 16px auto; width: 200px; height: 200px; padding: 6px; border: 2px solid #e2e8f0; border-radius: 14px; background: #fff;">
+                    <img id="standQrImg" src="https://quickchart.io/qr?text=https%3A%2F%2Feitaa.com%2FPSNETSENTER&size=200&margin=2" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <p style="font-size: 12px; font-weight: 800; color: #1e1b4b;">با دوربین گوشی اسکن کنید تا مستقیم وارد چت ایتا شوید</p>
+                <div style="margin-top: 12px; font-size: 11px; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 10px;">
+                    شماره تماس: ۰۹۹۹-۹۸۲-۸۹۰۴ • آیدی ایتا: PSNETSENTER@
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 16px;" class="no-print">
+                <button type="button" onclick="window.print()" class="btn btn-gold" style="flex: 1;">🖨️ پرینت پوستر رومیزی</button>
+                <button type="button" id="btnCloseStand" class="btn btn-ghost">بستن</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script>
+        const FULL_TARIFF_ITEMS = [
+          { id: 1, name: "ثبت نام کد اقتصادی دو مرحله", desc: "", price: 280000, category: "tax" },
+          { id: 2, name: "ویرایش و اصلاح کد اقتصادی (اینتاکد، کد آیسیک، شماره حساب و...)", desc: "", price: 90000, category: "tax" },
+          { id: 3, name: "اظهارنامه مالیاتی مشاغل تبصره ۱۰۰", desc: "پرینت فیش اضافه جداگانه محاسبه می شود", price: 250000, category: "tax" },
+          { id: 4, name: "اظهارنامه مالیاتی مشاغل خارج از توافق", desc: "هزینه پرینت مجزا محاسبه می شود", price: 350000, category: "tax" },
+          { id: 5, name: "اظهار نامه مستغلات (املاک)", desc: "به ازای هر مستاجر ۵۰,۰۰۰ تومان اضافه میگردد", price: 300000, category: "property" },
+          { id: 6, name: "اظهارنامه مالیاتی حقوقی بدون حسابرسی", desc: "هزینه پرینت مجزا محاسبه می شود", price: 500000, category: "tax" },
+          { id: 7, name: "اظهار نامه مالیاتی حقوقی با حسابرسی", desc: "", price: 1600000, category: "tax" },
+          { id: 8, name: "هر ساعت کار با اینترنت", desc: "", price: 140000, category: "internet" },
+          { id: 9, name: "کمترین مقدار استفاده از اینترنت (ورودی)", desc: "از ۱ تا ۱۰ دقیقه", price: 50000, category: "internet" },
+          { id: 10, name: "رایت CD", desc: "هزینه CD جداگانه محاسبه میشود", price: 50000, category: "media" },
+          { id: 11, name: "رایت DVD", desc: "هزینه جداگانه DVD محاسبه میشود", price: 65000, category: "media" },
+          { id: 12, name: "اسکن", desc: "همه اندازه", price: 20000, category: "print" },
+          { id: 13, name: "ساخت ایمیل", desc: "", price: 80000, category: "general" },
+          { id: 14, name: "ارسال ایمیل", desc: "به ازای هر مگابایت فایل ۲/۰۰۰ ریال", price: 50000, category: "general" },
+          { id: 15, name: "ثبت نام اینترنتی تک مرحله با یک اسکن", desc: "به ازای هر صفحه مبلغ ۱۵,۰۰۰ تومان اضافه می گردد", price: 200000, category: "general" },
+          { id: 16, name: "آپلود فایل در حین ثبتنام / پرداخت اینترنتی", desc: "هزینه اسکن و تکمیل اطلاعات به صورت جداگانه", price: 55000, category: "general" },
+          { id: 17, name: "دریافت فیش شهریه، نتایج کنکور، کارت ورود به جلسه", desc: "هزینه پرینت مجزا محاسبه می شود", price: 50000, category: "student" },
+          { id: 18, name: "کارنامه و فیش حقوقی، سابقه بیمه و...", desc: "هزینه پرینت مجزا محاسبه می شود", price: 65000, category: "general" },
+          { id: 19, name: "فیش بیمه شدگان خاص / ثبت نام سامانه تأمین اجتماعی", desc: "هزینه پرینت هر صفحه مجزا محاسبه می شود", price: 100000, category: "insurance" },
+          { id: 20, name: "جستجوی مقاله با ویرایش هر صفحه دانش آموزی", desc: "هزینه پرینت هر صفحه مجزا محاسبه می شود", price: 25000, category: "student" },
+          { id: 21, name: "جستجوی مقاله انگلیسی هر صفحه با ویرایش", desc: "هزینه پرینت هر صفحه مجزا محاسبه می شود", price: 35000, category: "student" },
+          { id: 22, name: "جستجوی مقاله دانشجویی با ویرایش", desc: "هزینه پرینت هر صفحه مجزا محاسبه می شود", price: 35000, category: "student" },
+          { id: 23, name: "جستجوی مقاله تخصصی با ویرایش", desc: "هزینه پرینت هر صفحه مجزا محاسبه می شود", price: 40000, category: "student" },
+          { id: 24, name: "ثبت نام وام ازدواج / وام فرزند آوری هر نفر کامل", desc: "ثبت نام کامل مرحله اول", price: 150000, category: "loan" },
+          { id: 25, name: "ثبت نام وام ازدواج هر نفر مرحله دوم انتخاب شعبه", desc: "پیگیری و تعیین شعبه بانک", price: 150000, category: "loan" },
+          { id: 26, name: "درخواست مشاهده بانکها", desc: "استعلام وضعیت سهمیه شعب", price: 60000, category: "loan" },
+          { id: 27, name: "انتخاب واحد دانشگاهها به جز دانشگاه آزاد به ازای هر درس", desc: "هزینه پرینت هر صفحه جداگانه", price: 200000, category: "student" },
+          { id: 28, name: "انتخاب واحد دانشگاه آزاد به ازای هر درس", desc: "هزینه پرینت هر صفحه جداگانه", price: 200000, category: "student" },
+          { id: 29, name: "انتخاب رشته کنکور (۱ تا ۱۵ انتخاب)", desc: "به ازای هر انتخاب اضافه ۷۰,۰۰۰ ریال افزوده می‌شود", price: 230000, category: "student" },
+          { id: 30, name: "ویرایش متن ساده - بر حسب زمان - هر دقیقه", desc: "", price: 13000, category: "typing" },
+          { id: 31, name: "ارسال و دریافت فکس به داخل", desc: "هر صفحه", price: 40000, category: "general" },
+          { id: 32, name: "فتوکپی و پرینت سیاه و سفید یک صفحه ای A4 متنی", desc: "دورو ۱۵,۰۰۰ تومان", price: 10000, category: "print" },
+          { id: 33, name: "فتوکپی و پرینت سیاه و سفید یک صفحه ای A4 عکس", desc: "دورو ۲۵,۰۰۰ تومان", price: 18000, category: "print" },
+          { id: 34, name: "فتوکپی و پرینت سیاه و سفید یک صفحه ای A3 متنی", desc: "دورو ۲۵,۰۰۰ تومان", price: 14000, category: "print" },
+          { id: 35, name: "فتوکپی و پرینت سیاه و سفید یک صفحه ای A3 عکس", desc: "دورو ۲۰,۰۰۰ تومان", price: 25000, category: "print" },
+          { id: 36, name: "فتوکپی و پرینت سیاه و سفید یک صفحه ای متنی A5", desc: "دورو ۱۵,۰۰۰ تومان", price: 9500, category: "print" },
+          { id: 37, name: "فتوکپی و پرینت سیاه و سفید یک صفحه ای A5 عکس", desc: "دورو ۱۸,۰۰۰ تومان", price: 20000, category: "print" },
+          { id: 38, name: "پرینت رنگی A4", desc: "هزینه کاغذ گلاسه جداگانه محاسبه می شود", price: 50000, category: "print" },
+          { id: 39, name: "پرینت رنگی A3", desc: "هزینه کاغذ گلاسه جداگانه محاسبه می شود", price: 80000, category: "print" },
+          { id: 40, name: "پرینت رنگی A5", desc: "هزینه کاغذ گلاسه جداگانه محاسبه می شود", price: 35000, category: "print" },
+          { id: 41, name: "پرینت اتوکد رنگی A4", desc: "", price: 40000, category: "print" },
+          { id: 42, name: "پرینت اتوکد سیاه و سفید A4", desc: "", price: 20000, category: "print" },
+          { id: 43, name: "پرینت اتوکد رنگی A3", desc: "", price: 70000, category: "print" },
+          { id: 44, name: "پرینت اتوکد سیاه و سفید A3", desc: "", price: 30000, category: "print" },
+          { id: 45, name: "پرینت اتوکد رنگی A5", desc: "", price: 35000, category: "print" },
+          { id: 46, name: "پرینت اتوکد سیاه و سفید A5", desc: "", price: 15000, category: "print" },
+          { id: 47, name: "پاورپوینت هر اسلاید دانش آموزی", desc: "", price: 20000, category: "student" },
+          { id: 48, name: "پاورپوینت هر اسلاید دانشجویی و تخصصی", desc: "", price: 30000, category: "student" },
+          { id: 49, name: "لیست بیمه کارگاهها به ازای هر نفر", desc: "از یک تا دو نفر ۷۰,۰۰۰ تومان", price: 35000, category: "insurance" },
+          { id: 50, name: "لیست مالیات بر حقوق کارکنان به ازای هر نفر", desc: "از یک تا دو نفر ۱۰۰,۰۰۰ تومان", price: 45000, category: "tax" },
+          { id: 51, name: "نمونه سؤال هر صفحه دانش آموزی ۱ تا ۱۰ برگ", desc: "هزینه پرینت هر صفحه جداگانه", price: 25000, category: "student" },
+          { id: 52, name: "نمونه سؤال هر صفحه دانش آموزی ۱۰ برگ به بالا", desc: "هزینه پرینت هر صفحه جداگانه", price: 20000, category: "student" },
+          { id: 53, name: "نمونه سؤال تخصصی و دانشگاهی", desc: "هزینه پرینت هر صفحه جداگانه", price: 35000, category: "student" },
+          { id: 54, name: "ابلاغیه قضایی یک صفحه", desc: "هزینه پرینت هر صفحه اضافه جداگانه", price: 50000, category: "judicial" },
+          { id: 55, name: "بازیابی رمز ثنا، تامین اجتماعی، تعویض پلاک و غیره", desc: "", price: 50000, category: "general" },
+          { id: 56, name: "ثبت یک فقره چک صیادی", desc: "هر عمل صیادی به طور جداگانه محسوب میشود", price: 50000, category: "loan" },
+          { id: 57, name: "پرینت یک صفحه ثبت نام ثنا", desc: "هزینه پرینت اضافه جداگانه محاسبه می شود", price: 40000, category: "judicial" },
+          { id: 58, name: "ثبت نام گوشی سرقتی در سامانه همیاب", desc: "هزینه پرداخت اینترنتی جداگانه", price: 200000, category: "general" },
+          { id: 59, name: "پیش ثبت نام خودرو و انتخاب خودرو همزمان", desc: "هزینه پرداخت و پرینت جداگانه", price: 250000, category: "vehicle" },
+          { id: 60, name: "وکالتی نمودن حساب بانکی", desc: "هزینه پرداخت و پرینت جداگانه", price: 150000, category: "loan" },
+          { id: 61, name: "ثبتنام صدور جواز کسب فقط در سامانه مجوزها", desc: "هزینه اسکن هر صفحه جداگانه", price: 200000, category: "business" },
+          { id: 62, name: "ثبت نام نظام مهندسی و آزمون", desc: "هزینه اسکن هر صفحه جداگانه", price: 300000, category: "student" },
+          { id: 63, name: "ثبت نام کارت بازرگانی", desc: "کلیه مراحل تا صدور کارت", price: 1000000, category: "business" },
+          { id: 64, name: "کسر اقساط (تعهد حقوقی تامین اجتماعی و بازنشستگان کشوری)", desc: "هزینه پرینت هر صفحه جداگانه", price: 100000, category: "loan" },
+          { id: 65, name: "ثبت نام سجام", desc: "هزینه پرداختی به صورت جداگانه", price: 140000, category: "loan" },
+          { id: 66, name: "احراز هویت سجام", desc: "هزینه پرداختی به صورت جداگانه", price: 140000, category: "loan" },
+          { id: 67, name: "ثبتنام کارگزاری بدون آزمون", desc: "هزینه آزمون جداگانه محاسبه میشود", price: 230000, category: "loan" },
+          { id: 68, name: "ثبت نام تعویض پلاک در سامانه نوبت دهی", desc: "نوبت گیری تعویض پلاک ۱۰۰,۰۰۰ تومان", price: 230000, category: "vehicle" },
+          { id: 69, name: "ثبت نام تعویض پلاک در سامانه فراجا (سخا)", desc: "هزینه پرداخت و پرینت جداگانه", price: 200000, category: "vehicle" },
+          { id: 70, name: "ثبت نام و پرداخت مالیات نقل و انتقال خودرو (دو مرحله)", desc: "هزینه پرداخت و پرینت جداگانه", price: 180000, category: "vehicle" },
+          { id: 71, name: "استعلام و پرداخت خلافی خودرو (سامانه تعویض پلاک)", desc: "هزینه پرداخت و پرینت جداگانه", price: 250000, category: "vehicle" },
+          { id: 72, name: "استعلام و پرداخت خلافی خودرو ریز خلافی", desc: "هزینه پرداخت و پرینت جداگانه", price: 100000, category: "vehicle" },
+          { id: 73, name: "استعلام و پرداخت هزینه آزادراهی سامانه تعویض پلاک", desc: "هزینه پرداخت و پرینت جداگانه", price: 60000, category: "vehicle" },
+          { id: 74, name: "استعلام و پرداخت هزینه آزادراهی سامانه ANRO", desc: "هزینه پرداخت و پرینت جداگانه", price: 130000, category: "vehicle" },
+          { id: 75, name: "نوبت گیری دادگاه بدون پرینت", desc: "هزینه پرینت هر صفحه جداگانه", price: 70000, category: "judicial" },
+          { id: 76, name: "ثبت درخواستهای تأمین اجتماعی", desc: "هزینه اسکن و پرینت هر صفحه جداگانه", price: 80000, category: "insurance" },
+          { id: 77, name: "تأییدیه تحصیلی بدون پرداخت", desc: "هزینه پرداخت و پرینت جداگانه", price: 150000, category: "student" },
+          { id: 78, name: "ثبت مرخصی تاکسیرانی", desc: "هزینه اسکن و پرینت جداگانه", price: 130000, category: "vehicle" },
+          { id: 79, name: "احراز محل سکونت سخا - دو مرحله", desc: "هزینه پرداخت و پرینت جداگانه", price: 180000, category: "vehicle" },
+          { id: 80, name: "هزینه ارسال و دریافت در پیام رسانها کمتر از ۵ مگابایت", desc: "", price: 20000, category: "general" },
+          { id: 81, name: "ثبت نام کتاب درسی", desc: "هزینه پرداخت و پرینت جداگانه", price: 150000, category: "student" },
+          { id: 82, name: "صدور کارت واکسن دیجیتال داخل ایران", desc: "صدور کارت واکسن خارج کشور یک نفر ۲۰۰,۰۰۰ تومان", price: 200000, category: "general" },
+          { id: 83, name: "صدور برگه تاییدیه پستی", desc: "هزینه پرداخت و پرینت جداگانه", price: 70000, category: "general" },
+          { id: 84, name: "دریافت کد سوابق تحصیلی", desc: "هزینه پرداخت و پرینت جداگانه", price: 200000, category: "student" },
+          { id: 85, name: "ثبت درخواست سوء پیشینه قضایی", desc: "هزینه پرداخت و پرینت جداگانه", price: 150000, category: "judicial" },
+          { id: 86, name: "ثبت نام اولیه سامانه ستاد ایران", desc: "هزینه توکن و فعالسازی ستاد ایران جداگانه", price: 300000, category: "business" },
+          { id: 87, name: "ثبت نام مسکن ملی", desc: "هزینه اسکن و پرینت و پرداخت جداگانه", price: 200000, category: "property" },
+          { id: 88, name: "ثبت نام وام ودیعه مسکن", desc: "ثبت نام وام مستأجران", price: 200000, category: "loan" },
+          { id: 89, name: "ثبت نام کامل مجوز (سامانه مجوز - صدور پروانه - وام تبصره ۱۶)", desc: "", price: 400000, category: "business" },
+          { id: 90, name: "ثبت نام وام مشاغل خانگی مستقل", desc: "هزینه اسکن و پرینت جداگانه", price: 300000, category: "loan" },
+          { id: 91, name: "ثبت نام وام مشاغل خانگی پشتیبان", desc: "هزینه اسکن و پرینت جداگانه", price: 250000, category: "loan" },
+          { id: 92, name: "ثبت نام وام مشاغل خانگی تحت پوشش", desc: "هزینه اسکن و پرینت جداگانه", price: 100000, category: "loan" },
+          { id: 93, name: "هزینه ورود به سایت بدون نتیجه نهایی", desc: "هزینه اسکن و پرینت جداگانه", price: 20000, category: "general" },
+          { id: 94, name: "پرس سایز A3", desc: "لمینت گرم", price: 150000, category: "print" },
+          { id: 95, name: "پرس سایز A4", desc: "لمینت گرم", price: 80000, category: "print" },
+          { id: 96, name: "پرس سایز A5 و کوچکتر", desc: "لمینت کارت و اسناد کوچک", price: 50000, category: "print" },
+          { id: 97, name: "سامانه خودنویس (اجاره)", desc: "هزینه سامانه املاک و پرینت جداگانه محاسبه می شود", price: 1000000, category: "property" },
+          { id: 98, name: "سامانه خودنویس (مبایعه‌نامه)", desc: "هزینه سامانه املاک و پرینت جداگانه محاسبه می شود", price: 1000000, category: "property" },
+          { id: 99, name: "ثبت آدرس سامانه املاک", desc: "هزینه اسکن و پرینت به صورت جداگانه", price: 80000, category: "property" },
+          { id: 100, name: "ثبت آدرس سامانه NCR", desc: "هزینه پرداخت و پرینت جداگانه", price: 80000, category: "property" },
+          { id: 101, name: "ثبت نام کارت سوخت", desc: "هزینه پرداخت و پرینت جداگانه", price: 100000, category: "vehicle" },
+          { id: 102, name: "ثبت نام سامانه سامح (بهداشت)", desc: "هزینه پرداخت و پرینت جداگانه", price: 150000, category: "general" },
+          { id: 103, name: "ثبت نام سامانه سماح", desc: "ثبت نام زائران اربعین", price: 130000, category: "general" },
+          { id: 104, name: "ثبت نام ارز کربلا", desc: "هزینه پرداخت و پرینت جداگانه", price: 50000, category: "loan" },
+          { id: 105, name: "ثبت نام مدارس", desc: "هزینه اسکن و پرینت جداگانه", price: 140000, category: "student" },
+          { id: 106, name: "پرداخت قبض های مالیات، ارزش افزوده", desc: "هزینه پرینت جداگانه", price: 200000, category: "tax" },
+          { id: 107, name: "ثبت نام ارزش افزوده", desc: "هزینه پرینت جداگانه", price: 250000, category: "tax" },
+          { id: 108, name: "ثبت نام اولیه گازوئیل", desc: "هزینه پرینت و اسکن جداگانه", price: 200000, category: "vehicle" },
+          { id: 109, name: "درخواست گازوئیل", desc: "سهمیه ماهانه", price: 100000, category: "vehicle" },
+          { id: 110, name: "تایپ فوری", desc: "هزینه پرینت به صورت جداگانه", price: 100000, category: "typing" },
+          { id: 111, name: "تایپ فارسی هر صفحه", desc: "صفحه استاندارد ۲۵۰ کلمه", price: 80000, category: "typing" },
+          { id: 112, name: "تایپ انگلیسی هر صفحه", desc: "صفحه استاندارد", price: 100000, category: "typing" },
+          { id: 113, name: "تایپ عربی هر صفحه", desc: "صفحه استاندارد اعراب گذاری شده", price: 100000, category: "typing" },
+          { id: 114, name: "تایپ ریاضی (فرمول نویسی هر صفحه)", desc: "فرمول نویسی پیشرفته", price: 150000, category: "typing" },
+          { id: 115, name: "تایپ نمونه سوال هر صفحه", desc: "صفحه بندی امتحانی", price: 100000, category: "typing" },
+          { id: 116, name: "اعتبار سنجی بانک ها", desc: "رتبه اعتباری آیسک و مرات", price: 300000, category: "loan" },
+          { id: 117, name: "افتتاح حساب غیر حضوری بانک ها (مهر و رسالت و...)", desc: "ثبت نام تا احراز هویت", price: 300000, category: "loan" },
+          { id: 118, name: "ثبت نام گذرنامه زیارتی", desc: "هزینه اسکن و پرینت و پرداخت جداگانه", price: 120000, category: "judicial" },
+          { id: 119, name: "ثبت نام گذرنامه عادی (۵ ساله)", desc: "هزینه اسکن و پرینت و پرداخت جداگانه", price: 200000, category: "judicial" },
+          { id: 120, name: "نصب آنتی ویروس اورجینال", desc: "هزینه سریال جداگانه محاسبه میشود", price: 200000, category: "computer" },
+          { id: 121, name: "نصب ویندوز با برنامه های جانبی (کیس)", desc: "درایور و نرم‌افزارهای پایه", price: 200000, category: "computer" },
+          { id: 122, name: "نصب ویندوز با برنامه های جانبی لپ تاپ", desc: "نصب درایورها و بهینه‌سازی باتری", price: 450000, category: "computer" },
+          { id: 123, name: "هزینه استعلام سایت ها (ازدواج، ابلاغ و...)", desc: "هزینه پرینت جداگانه", price: 80000, category: "general" },
+          { id: 124, name: "خرید بلیط هواپیما، قطار، اتوبوس یک نفر", desc: "هزینه اسکن و پرینت جداگانه", price: 150000, category: "general" },
+          { id: 125, name: "خرید بلیط هواپیما، قطار اتوبوس به ازای هر نفر اضافه", desc: "رزرو گروهی", price: 150000, category: "general" },
+          { id: 126, name: "ثبت نام خانوار NCR (جداسازی و اضافه کردن عضو خانوار)", desc: "هر نفر اضافه ۲۰,۰۰۰ تومان", price: 150000, category: "general" },
+          { id: 127, name: "ثبت شماره حساب یارانه (سامانه هدفمندسازی)", desc: "هزینه پرداخت و پرینت جداگانه", price: 80000, category: "general" },
+          { id: 128, name: "ثبت نام سامانه سجاد", desc: "ثبت نام اولیه دانشجویی", price: 200000, category: "student" },
+          { id: 129, name: "ثبت درخواست در سامانه سجاد", desc: "هزینه اسکن و پرینت جداگانه", price: 200000, category: "student" },
+          { id: 130, name: "ثبت نام موتور سیکلت یک روزه", desc: "هزینه املاک و سخا و پرینت جداگانه", price: 200000, category: "vehicle" },
+          { id: 131, name: "سامانه سیرت سنجش بدو ورود", desc: "سنجش سلامت نوآموزان", price: 200000, category: "student" },
+          { id: 132, name: "صحافی (حداقل کتابهای کوچک)", desc: "صحافی فنر دوبل و طلق", price: 500000, category: "print" },
+          { id: 133, name: "صحافی (حداکثر کتابهای قطور)", desc: "صحافی کتب و پایان‌نامه", price: 1800000, category: "print" },
+          { id: 134, name: "منگنه کتاب (هر یک کتاب)", desc: "منگنه ضخیم وسط‌زن", price: 200000, category: "print" }
+        ];
+
+        const syncChannel = new BroadcastChannel('psnet_sync_orders');
+        let selectedFiles = [];
+        let activeCategory = 'all';
+        let isAdminLoggedIn = false;
+
+        // دیتابیس امن محلی (شامل سفارشات و اطلاعات هش‌شده احراز هویت)
+        let db;
+        const request = indexedDB.open('PSNetDB_Secure', 2);
+        request.onupgradeneeded = (e) => {
+            db = e.target.result;
+            if (!db.objectStoreNames.contains('orders')) {
+                db.createObjectStore('orders', { keyPath: 'id', autoIncrement: true });
+            }
+            if (!db.objectStoreNames.contains('security')) {
+                db.createObjectStore('security', { keyPath: 'key' });
+            }
+        };
+        request.onsuccess = (e) => {
+            db = e.target.result;
+            loadAdminTable();
+        };
+
+        // توابع رمزنگاری بومی امن (Web Crypto API SHA-256 + Salt)
+        async function hashPassword(plainPassword, salt) {
+            const encoder = new TextEncoder();
+            const saltedBuffer = encoder.encode(plainPassword + '::psnet_salt::' + salt);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', saltedBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function generateRandomSalt() {
+            const array = new Uint8Array(16);
+            crypto.getRandomValues(array);
+            return Array.from(array).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function playChime() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = ctx.currentTime;
+                const o1 = ctx.createOscillator();
+                const g1 = ctx.createGain();
+                o1.frequency.setValueAtTime(587.33, now);
+                g1.gain.setValueAtTime(0.3, now);
+                g1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                o1.connect(g1); g1.connect(ctx.destination);
+                o1.start(now); o1.stop(now + 0.35);
+
+                const o2 = ctx.createOscillator();
+                const g2 = ctx.createGain();
+                o2.frequency.setValueAtTime(880, now + 0.12);
+                g2.gain.setValueAtTime(0.3, now + 0.12);
+                g2.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                o2.connect(g2); g2.connect(ctx.destination);
+                o2.start(now + 0.12); o2.stop(now + 0.6);
+            } catch(e) {}
+        }
+
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            if (type === 'error') toast.style.borderColor = 'var(--rose)';
+            if (type === 'success') toast.style.borderColor = 'var(--emerald)';
+            toast.textContent = msg;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        async function compressImage(file) {
+            if (!file.type.startsWith('image/')) return file;
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const MAX_DIM = 1600;
+                        let w = img.width, h = img.height;
+                        if (w > MAX_DIM || h > MAX_DIM) {
+                            if (w > h) { h = Math.round((h * MAX_DIM) / w); w = MAX_DIM; }
+                            else { w = Math.round((w * MAX_DIM) / h); h = MAX_DIM; }
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = w; canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        canvas.toBlob((blob) => {
+                            resolve(new File([blob], file.name, { type: 'image/jpeg' }));
+                        }, 'image/jpeg', 0.82);
+                    };
+                    img.onerror = () => resolve(file);
+                    img.src = e.target.result;
+                };
+                reader.onerror = () => resolve(file);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function populateServiceSelect() {
+            const select = document.getElementById('serviceSelect');
+            select.innerHTML = '';
+            const filtered = activeCategory === 'all' 
+                ? FULL_TARIFF_ITEMS 
+                : FULL_TARIFF_ITEMS.filter(t => t.category === activeCategory);
+
+            filtered.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.id;
+                opt.textContent = `${item.name} (${item.price.toLocaleString('fa-IR')} تومان)`;
+                select.appendChild(opt);
+            });
+            updatePrice();
+        }
+
+        function updatePrice() {
+            const id = parseInt(document.getElementById('serviceSelect').value, 10);
+            const item = FULL_TARIFF_ITEMS.find(t => t.id === id);
+            if (item) {
+                document.getElementById('priceDisplay').textContent = item.price.toLocaleString('fa-IR');
+                document.getElementById('serviceDescText').textContent = item.desc || 'خدمت رسمی صنف رایانه';
+            }
+        }
+
+        function fileToBase64(file) {
+            return new Promise((res, rej) => {
+                const r = new FileReader();
+                r.onload = () => res({ name: file.name, size: file.size, type: file.type, data: r.result });
+                r.onerror = rej;
+                r.readAsDataURL(file);
+            });
+        }
+
+        document.getElementById('orderForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmitOrder');
+            btn.disabled = true;
+            btn.textContent = 'در حال ثبت...';
+
+            const name = document.getElementById('custName').value.trim();
+            const mobile = document.getElementById('custMobile').value.trim();
+            const nationalId = document.getElementById('custNationalId').value.trim();
+            const serviceId = parseInt(document.getElementById('serviceSelect').value, 10);
+            const notes = document.getElementById('custNotes').value.trim();
+
+            const tariff = FULL_TARIFF_ITEMS.find(t => t.id === serviceId);
+            const trackingCode = 'PS-' + Math.floor(100000 + Math.random() * 900000);
+
+            const filesData = [];
+            for (const f of selectedFiles) {
+                filesData.push(await fileToBase64(f));
+            }
+
+            const order = {
+                trackingCode,
+                name,
+                mobile,
+                nationalId,
+                serviceId: tariff.id,
+                serviceName: tariff.name,
+                price: tariff.price,
+                notes,
+                files: filesData,
+                status: 'pending',
+                createdAt: new Date().toLocaleString('fa-IR')
+            };
+
+            const tx = db.transaction('orders', 'readwrite');
+            tx.objectStore('orders').add(order);
+            tx.oncomplete = () => {
+                syncChannel.postMessage({ type: 'NEW_ORDER', order });
+                document.getElementById('orderForm').style.display = 'none';
+                document.getElementById('successBox').style.display = 'block';
+                document.getElementById('resTrackingCode').textContent = trackingCode;
+                showToast('سفارش شما با موفقیت ثبت شد', 'success');
+            };
+        });
+
+        syncChannel.onmessage = (e) => {
+            if (e.data.type === 'NEW_ORDER') {
+                playChime();
+                showToast(`🔔 سفارش جدید دریافت شد: ${e.data.order.name}`, 'success');
+                if (isAdminLoggedIn) loadAdminTable();
+            }
+        };
+
+        function loadAdminTable() {
+            if (!db) return;
+            const tx = db.transaction('orders', 'readonly');
+            const req = tx.objectStore('orders').getAll();
+            req.onsuccess = () => {
+                const orders = req.result.reverse();
+                renderTable(orders);
+                updateStats(orders);
+            };
+        }
+
+        function updateStats(orders) {
+            document.getElementById('statTotal').textContent = orders.length.toLocaleString('fa-IR');
+            document.getElementById('statPending').textContent = orders.filter(o => o.status === 'pending').length.toLocaleString('fa-IR');
+            document.getElementById('statInProgress').textContent = orders.filter(o => o.status === 'in_progress').length.toLocaleString('fa-IR');
+            document.getElementById('statCompleted').textContent = orders.filter(o => o.status === 'completed').length.toLocaleString('fa-IR');
+        }
+
+        function renderTable(orders) {
+            const tbody = document.getElementById('ordersTableBody');
+            tbody.innerHTML = '';
+
+            const q = document.getElementById('adminSearchInput').value.toLowerCase().trim();
+            const st = document.getElementById('adminStatusFilter').value;
+
+            const filtered = orders.filter(o => {
+                const matchQ = !q || o.name.toLowerCase().includes(q) || o.mobile.includes(q) || o.trackingCode.toLowerCase().includes(q);
+                const matchSt = st === 'all' || o.status === st;
+                return matchQ && matchSt;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted)">سفارشی یافت نشد.</td></tr>';
+                return;
+            }
+
+            filtered.forEach(o => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-family:monospace;font-weight:bold;color:var(--gold);">${o.trackingCode}</td>
+                    <td><strong>${o.name}</strong><br><small style="color:var(--text-muted);">${o.mobile}</small></td>
+                    <td>${o.serviceName}</td>
+                    <td style="font-weight:bold;">${o.price.toLocaleString('fa-IR')} ت</td>
+                    <td>
+                        <select class="input-box" style="padding:4px 8px;font-size:11px;width:auto;" onchange="updateStatus(${o.id}, this.value)">
+                            <option value="pending" ${o.status==='pending'?'selected':''}>در انتظار</option>
+                            <option value="in_progress" ${o.status==='in_progress'?'selected':''}>در حال انجام</option>
+                            <option value="completed" ${o.status==='completed'?'selected':''}>تکمیل شد</option>
+                        </select>
+                    </td>
+                    <td>${o.files && o.files.length ? `<button class="btn btn-ghost" style="padding:4px 8px;font-size:11px;" onclick="viewFiles(${o.id})">${o.files.length} مدرک</button>` : 'ندارد'}</td>
+                    <td><button class="btn btn-ghost" style="padding:4px 8px;" onclick="copyText('${o.mobile}')">📋</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        window.updateStatus = (id, newStatus) => {
+            const tx = db.transaction('orders', 'readwrite');
+            const store = tx.objectStore('orders');
+            store.get(id).onsuccess = (e) => {
+                const order = e.target.result;
+                order.status = newStatus;
+                store.put(order);
+                loadAdminTable();
+                showToast('وضعیت به‌روز شد', 'success');
+            };
+        };
+
+        window.viewFiles = (id) => {
+            const tx = db.transaction('orders', 'readonly');
+            tx.objectStore('orders').get(id).onsuccess = (e) => {
+                const order = e.target.result;
+                const container = document.getElementById('filesListContainer');
+                container.innerHTML = '';
+                order.files.forEach(f => {
+                    const row = document.createElement('div');
+                    row.className = 'glass-card-sm';
+                    row.style.padding = '10px 14px';
+                    row.style.display = 'flex';
+                    row.style.alignItems = 'center';
+                    row.style.justifyContent = 'space-between';
+                    row.innerHTML = `
+                        <div><strong>${f.name}</strong><br><small style="color:var(--text-muted);">${(f.size/1024).toFixed(0)} KB</small></div>
+                        <a href="${f.data}" download="${f.name}" class="btn btn-primary" style="padding:6px 12px;font-size:11px;">دانلود</a>
+                    `;
+                    container.appendChild(row);
+                });
+                document.getElementById('filesModal').style.display = 'flex';
+            };
+        };
+
+        window.copyText = (text) => {
+            navigator.clipboard.writeText(text);
+            showToast('شماره مشتری کپی شد', 'success');
+        };
+
+        document.getElementById('btnExportCSV').addEventListener('click', () => {
+            const tx = db.transaction('orders', 'readonly');
+            tx.objectStore('orders').getAll().onsuccess = (e) => {
+                const orders = e.target.result;
+                if (!orders.length) return showToast('سفارشی وجود ندارد');
+                const safe = v => `"'${(v||'').toString().replace(/"/g, '""')}"`;
+                const headers = ['کد پیگیری', 'نام', 'شماره همراه', 'کد ملی', 'خدمت', 'کارمزد', 'وضعیت', 'تاریخ'];
+                const rows = orders.map(o => [safe(o.trackingCode), safe(o.name), safe(o.mobile), safe(o.nationalId), safe(o.serviceName), safe(o.price), safe(o.status), safe(o.createdAt)].join(','));
+                const csv = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `PSNET_Orders_${new Date().toISOString().slice(0,10)}.csv`;
+                a.click();
+            };
+        });
+
+        // ==========================================
+        // مدیریت احراز هویت بدون پسورد هاردکدشده
+        // ==========================================
+
+        function checkAdminSetupState() {
+            const tx = db.transaction('security', 'readonly');
+            const req = tx.objectStore('security').get('admin_credential');
+            req.onsuccess = () => {
+                const credential = req.result;
+                if (!credential) {
+                    // هنوز رمزی تعیین نشده است؛ فرم تعریف اولیه را نشان بده
+                    document.getElementById('adminFirstSetupCard').style.display = 'block';
+                    document.getElementById('adminLoginCard').style.display = 'none';
+                    document.getElementById('adminDashboard').style.display = 'none';
+                } else if (!isAdminLoggedIn) {
+                    // رمز وجود دارد ولی لاگین نیست
+                    document.getElementById('adminFirstSetupCard').style.display = 'none';
+                    document.getElementById('adminLoginCard').style.display = 'block';
+                    document.getElementById('adminDashboard').style.display = 'none';
+                } else {
+                    // لاگین شده است
+                    document.getElementById('adminFirstSetupCard').style.display = 'none';
+                    document.getElementById('adminLoginCard').style.display = 'none';
+                    document.getElementById('adminDashboard').style.display = 'block';
+                }
+            };
+        }
+
+        // ثبت رمز عبور اولیه توسط مدیر
+        document.getElementById('adminFirstSetupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const p1 = document.getElementById('newAdminPassInput').value;
+            const p2 = document.getElementById('confirmAdminPassInput').value;
+
+            if (p1.length < 4) {
+                return showToast('رمز عبور باید حداقل ۴ رقم یا نویسه باشد', 'error');
+            }
+            if (p1 !== p2) {
+                return showToast('رمز عبور و تکرار آن یکسان نیستند', 'error');
+            }
+
+            const salt = generateRandomSalt();
+            const hash = await hashPassword(p1, salt);
+
+            const tx = db.transaction('security', 'readwrite');
+            tx.objectStore('security').put({ key: 'admin_credential', hash, salt });
+            tx.oncomplete = () => {
+                isAdminLoggedIn = true;
+                document.getElementById('adminFirstSetupCard').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'block';
+                loadAdminTable();
+                showToast('رمز مدیریت با موفقیت رمزنگاری و فعال شد', 'success');
+            };
+        });
+
+        // ورود روزمره با اعتبارسنجی هش کریپتوگرافیک
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const enteredPass = document.getElementById('adminPassInput').value;
+
+            const tx = db.transaction('security', 'readonly');
+            tx.objectStore('security').get('admin_credential').onsuccess = async (ev) => {
+                const credential = ev.target.result;
+                if (!credential) {
+                    return checkAdminSetupState();
+                }
+
+                const testHash = await hashPassword(enteredPass, credential.salt);
+                if (testHash === credential.hash) {
+                    isAdminLoggedIn = true;
+                    document.getElementById('adminPassInput').value = '';
+                    document.getElementById('adminLoginCard').style.display = 'none';
+                    document.getElementById('adminDashboard').style.display = 'block';
+                    loadAdminTable();
+                    showToast('ورود با موفقیت انجام شد', 'success');
+                } else {
+                    showToast('رمز عبور مدیریت نادرست است', 'error');
+                }
+            };
+        });
+
+        // تغییر رمز عبور از داخل پنل
+        document.getElementById('changePassForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const oldPass = document.getElementById('oldPassInput').value;
+            const newPass = document.getElementById('newPassChangeInput').value;
+            const confirmPass = document.getElementById('confirmPassChangeInput').value;
+
+            if (newPass.length < 4) {
+                return showToast('رمز جدید باید حداقل ۴ رقم یا کاراکتر باشد', 'error');
+            }
+            if (newPass !== confirmPass) {
+                return showToast('تکرار رمز عبور جدید تطابق ندارد', 'error');
+            }
+
+            const tx = db.transaction('security', 'readwrite');
+            const store = tx.objectStore('security');
+            store.get('admin_credential').onsuccess = async (ev) => {
+                const credential = ev.target.result;
+                const oldHashTest = await hashPassword(oldPass, credential.salt);
+                if (oldHashTest !== credential.hash) {
+                    return showToast('رمز عبور فعلی نادرست است', 'error');
+                }
+
+                const newSalt = generateRandomSalt();
+                const newHash = await hashPassword(newPass, newSalt);
+                store.put({ key: 'admin_credential', hash: newHash, salt: newSalt });
+                document.getElementById('changePassModal').style.display = 'none';
+                document.getElementById('changePassForm').reset();
+                showToast('رمز عبور مدیریت با موفقیت تغییر یافت', 'success');
+            };
+        });
+
+        document.getElementById('btnOpenChangePassModal').addEventListener('click', () => {
+            document.getElementById('changePassModal').style.display = 'flex';
+        });
+        document.getElementById('btnCloseChangePassModal').addEventListener('click', () => {
+            document.getElementById('changePassModal').style.display = 'none';
+        });
+
+        document.getElementById('btnAdminLogout').addEventListener('click', () => {
+            isAdminLoggedIn = false;
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('adminLoginCard').style.display = 'block';
+            showToast('میز کار قفل شد', 'info');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            populateServiceSelect();
+            document.getElementById('serviceSelect').addEventListener('change', updatePrice);
+
+            document.getElementById('categoryTabs').addEventListener('click', (e) => {
+                if (e.target.classList.contains('tab-btn')) {
+                    document.querySelectorAll('#categoryTabs .tab-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    activeCategory = e.target.dataset.cat;
+                    populateServiceSelect();
+                }
+            });
+
+            document.getElementById('btnCopyCard').addEventListener('click', () => {
+                navigator.clipboard.writeText('6063731104078275');
+                showToast('شماره کارت با موفقیت کپی شد', 'success');
+            });
+
+            const drop = document.getElementById('dropZone');
+            const finput = document.getElementById('fileInput');
+            drop.addEventListener('click', () => finput.click());
+            finput.addEventListener('change', async (e) => {
+                for (const f of Array.from(e.target.files)) {
+                    if (selectedFiles.length >= 8) break;
+                    selectedFiles.push(await compressImage(f));
+                }
+                renderPreview();
+                finput.value = '';
+            });
+
+            function renderPreview() {
+                const box = document.getElementById('filePreviewList');
+                box.innerHTML = '';
+                selectedFiles.forEach((f, i) => {
+                    const d = document.createElement('div');
+                    d.className = 'glass-card-sm';
+                    d.style.padding = '4px 8px';
+                    d.style.fontSize = '11px';
+                    d.innerHTML = `${f.name.slice(0, 15)}... <span style="cursor:pointer;color:var(--rose);margin-right:6px;" onclick="removeFile(${i})">✕</span>`;
+                    box.appendChild(d);
+                });
+            }
+            window.removeFile = (i) => { selectedFiles.splice(i, 1); renderPreview(); };
+
+            document.getElementById('btnToggleAdmin').addEventListener('click', () => {
+                const cust = document.getElementById('customerSection');
+                const adm = document.getElementById('adminSection');
+                if (cust.style.display !== 'none') {
+                    cust.style.display = 'none';
+                    adm.style.display = 'block';
+                    checkAdminSetupState();
+                    document.getElementById('adminBtnText').textContent = 'فرم مشتری';
+                } else {
+                    adm.style.display = 'none';
+                    cust.style.display = 'block';
+                    document.getElementById('adminBtnText').textContent = 'میز کار مدیر';
+                }
+            });
+
+            document.getElementById('adminSearchInput').addEventListener('input', loadAdminTable);
+            document.getElementById('adminStatusFilter').addEventListener('change', loadAdminTable);
+
+            document.getElementById('btnOpenStand').addEventListener('click', () => document.getElementById('standModal').style.display = 'flex');
+            document.getElementById('btnCloseStand').addEventListener('click', () => document.getElementById('standModal').style.display = 'none');
+            document.getElementById('btnCloseFilesModal').addEventListener('click', () => document.getElementById('filesModal').style.display = 'none');
+            
+            document.getElementById('btnOpenTariffModal').addEventListener('click', () => {
+                const c = document.getElementById('tariffListContainer');
+                c.innerHTML = '';
+                FULL_TARIFF_ITEMS.forEach(t => {
+                    const row = document.createElement('div');
+                    row.className = 'glass-card-sm';
+                    row.style.padding = '8px 12px';
+                    row.style.display = 'flex';
+                    row.style.justifyContent = 'space-between';
+                    row.style.cursor = 'pointer';
+                    row.innerHTML = `<div><strong>${t.name}</strong><br><small style="color:var(--text-muted)">${t.desc||'مصوب'}</small></div><span style="color:var(--gold);font-weight:bold;">${t.price.toLocaleString('fa-IR')} ت</span>`;
+                    row.onclick = () => {
+                        document.getElementById('serviceSelect').value = t.id;
+                        updatePrice();
+                        document.getElementById('tariffModal').style.display = 'none';
+                    };
+                    c.appendChild(row);
+                });
+                document.getElementById('tariffModal').style.display = 'flex';
+            });
+            document.getElementById('btnCloseTariffModal').addEventListener('click', () => document.getElementById('tariffModal').style.display = 'none');
+            document.getElementById('tariffSearchBox').addEventListener('input', (e) => {
+                const q = e.target.value.toLowerCase().trim();
+                document.querySelectorAll('#tariffListContainer > div').forEach(r => {
+                    r.style.display = r.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
+                });
+            });
+
+            document.getElementById('btnResetForm').addEventListener('click', () => {
+                document.getElementById('orderForm').reset();
+                selectedFiles = [];
+                renderPreview();
+                document.getElementById('successBox').style.display = 'none';
+                document.getElementById('orderForm').style.display = 'block';
+                document.getElementById('btnSubmitOrder').disabled = false;
+                document.getElementById('btnSubmitOrder').textContent = 'ثبت سفارش و ارسال به کامپیوتر مغازه';
+            });
+        });
+    </script>
+</body>
+</html>
